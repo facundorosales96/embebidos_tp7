@@ -39,6 +39,13 @@
     - test/support
   :libraries: []
 
+:flags:
+  :test:
+    :compile:
+      :*:
+        - -Wall
+        - -pedantic
+
 :defines:
   # in order to add common defines:
   #  1) remove the trailing [] from the :common: section
