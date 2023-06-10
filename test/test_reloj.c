@@ -13,8 +13,8 @@
 
 static bool alarm_enable = false;
 
-void EnableAlarm(void) {
-    alarm_enable = true;
+void EnableAlarm(bool status) {
+    alarm_enable = status;
 }
 // Al iniciar el reloj esta en 00:00 y con hora invalida
 
@@ -165,4 +165,42 @@ void test_fijar_alarma_y_no_suena(void) {
 
     TEST_ASSERT_EQUAL_UINT8_ARRAY(HORA_ALARMA, hora, 6);
     TEST_ASSERT_FALSE(alarm_enable);
+}
+
+// Hacer sonar la alarma y posponerla
+
+void test_fijar_alarma_y_posponer(void) {
+    static const uint8_t HORA_INICIAL[] = {0, 0, 0, 0, 0, 0};
+    static const uint8_t HORA_ALARMA[] = {0, 0, 0, 1, 0, 0};
+    static const uint8_t HORA_ALARMA_POSPUESTA[] = {0, 0, 0, 2, 0, 0};
+
+    uint8_t hora[6] = {0};
+
+    clock_t reloj = ClockCreate(5, EnableAlarm);
+
+    ClockSetTime(reloj, HORA_INICIAL, 6);
+    AlarmSetTime(reloj, HORA_ALARMA, 6);
+    ActivateAlarm(reloj, true);
+
+    int n = 300;
+    for (int i = 0; i < n; i++) {
+
+        ClockUpdate(reloj);
+    }
+    ClockGetTime(reloj, hora, 6);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(HORA_ALARMA, hora, 6);
+    TEST_ASSERT_TRUE(alarm_enable);
+
+    ExtendAlarm(reloj, 1);
+    TEST_ASSERT_FALSE(alarm_enable);
+
+    for (int i = 0; i < n; i++) {
+
+        ClockUpdate(reloj);
+    }
+    ClockGetTime(reloj, hora, 6);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(HORA_ALARMA_POSPUESTA, hora, 6);
+    TEST_ASSERT_TRUE(alarm_enable);
 }

@@ -46,7 +46,7 @@ extern "C" {
 
 typedef struct clock_s * clock_t;
 
-typedef void (*alarm_notification_t)(void);
+typedef void (*alarm_notification_t)(bool status);
 
 clock_t ClockCreate(int tics_por_segundo, alarm_notification_t enable_alarm);
 
@@ -60,6 +60,7 @@ void ClockUpdate(clock_t reloj);
 void AlarmGetTime(clock_t reloj, uint8_t * hora, int size);
 void AlarmSetTime(clock_t reloj, const uint8_t * hora, int size);
 void ActivateAlarm(clock_t reloj, bool status);
+void ExtendAlarm(clock_t reloj, int minutos);
 
 /* === End of documentation ==================================================================== */
 

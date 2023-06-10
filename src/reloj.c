@@ -62,6 +62,8 @@ struct clock_s {
     uint8_t hora_alarma_fijada[6];
     alarm_notification_t EnableAlarm;
     bool activate_alarm;
+    uint16_t segundos_pospuestos;
+    bool alarma_pospuesta;
 };
 
 clock_t ClockCreate(int tics_por_segundo, alarm_notification_t EnableAlarm) {
@@ -122,9 +124,17 @@ void Increment(clock_t reloj) {
 void AlarmaCheck(clock_t reloj) {
 
     if (reloj->activate_alarm) {
+        if (reloj->alarma_pospuesta) {
+            if (reloj->segundos_pospuestos == 0) {
+                reloj->EnableAlarm(true);
+                reloj->alarma_pospuesta = 0;
+            }
 
-        if (memcmp(reloj->hora_actual, reloj->hora_alarma_fijada, sizeof(reloj->hora_actual)) == 0)
-            reloj->EnableAlarm();
+        } else {
+            if (memcmp(reloj->hora_actual, reloj->hora_alarma_fijada, sizeof(reloj->hora_actual)) == 0) {
+                reloj->EnableAlarm(true);
+            }
+        }
     }
 }
 
@@ -138,6 +148,7 @@ void ClockUpdate(clock_t reloj) {
     if (reloj->tics == 0) {
         Increment(reloj);
         reloj->tics = reloj->tics_por_segundo;
+        reloj->segundos_pospuestos--;
         AlarmaCheck(reloj);
     }
 }
@@ -148,6 +159,12 @@ void AlarmGetTime(clock_t reloj, uint8_t * hora, int size) {
 
 void AlarmSetTime(clock_t reloj, const uint8_t * hora, int size) {
     memcpy(reloj->hora_alarma_fijada, hora, size);
+}
+
+void ExtendAlarm(clock_t reloj, int minutos) {
+    reloj->segundos_pospuestos = minutos * 60;
+    reloj->EnableAlarm(false);
+    reloj->alarma_pospuesta = 1;
 }
 
 /* === End of documentation ==================================================================== */
