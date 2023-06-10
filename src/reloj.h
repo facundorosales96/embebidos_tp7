@@ -59,6 +59,7 @@ bool ClockSetTime(clock_t reloj, const uint8_t * hora, int size);
 void ClockUpdate(clock_t reloj);
 void AlarmGetTime(clock_t reloj, uint8_t * hora, int size);
 void AlarmSetTime(clock_t reloj, const uint8_t * hora, int size);
+void ActivateAlarm(clock_t reloj, bool status);
 
 /* === End of documentation ==================================================================== */
 
