@@ -1,6 +1,7 @@
 // PRUEBAS
 // Al iniciar el reloj esta en 00:00 y con hora invalida
 // Al ajustar la hora el reloj queda en hora y es valida
+// Despues de n ciclos de reloj la hora avanza un seg, 10seg, 1min, 10min, 1h, 10hs, 1 d
 // Fijar la hora de la alarma y consultarla
 //...
 
@@ -30,5 +31,67 @@ void test_ajustar_hora(void) {
 
     TEST_ASSERT_TRUE(ClockSetTime(reloj, ESPERADO, 4));
     TEST_ASSERT_TRUE(ClockGetTime(reloj, hora, 6));
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
+}
+
+// Despues de n ciclos de reloj la hora avanza un seg
+
+void test_hora_avanza_un_segundo(void) {
+    static const uint8_t ESPERADO[] = {0, 0, 0, 0, 0, 1};
+    uint8_t hora[6] = {0};
+    clock_t reloj = ClockCreate(5);
+
+    int n = 5;
+    for (int i = 0; i < n; i++) {
+
+        ClockUpdate(reloj);
+    }
+    ClockGetTime(reloj, hora, 6);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
+}
+
+void test_hora_avanza_diez_segundos(void) {
+    static const uint8_t ESPERADO[] = {0, 0, 0, 0, 1, 0};
+    uint8_t hora[6] = {0};
+    clock_t reloj = ClockCreate(5);
+
+    int n = 50;
+    for (int i = 0; i < n; i++) {
+
+        ClockUpdate(reloj);
+    }
+    ClockGetTime(reloj, hora, 6);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
+}
+
+void test_hora_avanza_un_minuto(void) {
+    static const uint8_t ESPERADO[] = {0, 0, 0, 1, 0, 0};
+    uint8_t hora[6] = {0};
+    clock_t reloj = ClockCreate(5);
+
+    int n = 300;
+    for (int i = 0; i < n; i++) {
+
+        ClockUpdate(reloj);
+    }
+    ClockGetTime(reloj, hora, 6);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
+}
+
+void test_hora_avanza_una_hora(void) {
+    static const uint8_t ESPERADO[] = {0, 1, 0, 0, 0, 0};
+    uint8_t hora[6] = {0};
+    clock_t reloj = ClockCreate(5);
+
+    int n = 18000;
+    for (int i = 0; i < n; i++) {
+
+        ClockUpdate(reloj);
+    }
+    ClockGetTime(reloj, hora, 6);
+
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
 }

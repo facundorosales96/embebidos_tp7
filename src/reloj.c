@@ -33,6 +33,12 @@ SPDX-License-Identifier: MIT
 #include <string.h>
 
 /* === Macros definitions ====================================================================== */
+#define SECONDS_UNITS 5
+#define SECONDS_TENS 4
+#define MINUTES_UNITS 3
+#define MINUTES_TENS 2
+#define HOURS_UNITS 1
+#define HOURS_TENS 0
 
 /* === Private data type declarations ========================================================== */
 
@@ -51,12 +57,16 @@ SPDX-License-Identifier: MIT
 struct clock_s {
     uint8_t hora_actual[6];
     bool valida;
+    uint8_t tics_por_segundo;
+    uint8_t tics;
 };
 
 clock_t ClockCreate(int tics_por_segundo) {
     static struct clock_s self[1];
 
     memset(self, 0, sizeof(self));
+    self->tics_por_segundo = tics_por_segundo;
+    self->tics = tics_por_segundo;
     return self;
 }
 
@@ -69,6 +79,49 @@ bool ClockSetTime(clock_t reloj, const uint8_t * hora, int size) {
     memcpy(reloj->hora_actual, hora, size);
     reloj->valida = true;
     return true;
+}
+
+void Increment(clock_t reloj) {
+    reloj->hora_actual[SECONDS_UNITS]++;
+
+    if (reloj->hora_actual[SECONDS_UNITS] >= 10) {
+        reloj->hora_actual[SECONDS_UNITS] = 0;
+        reloj->hora_actual[SECONDS_TENS]++;
+
+        if (reloj->hora_actual[SECONDS_TENS] >= 6) {
+            reloj->hora_actual[SECONDS_TENS] = 0;
+            reloj->hora_actual[MINUTES_UNITS]++;
+
+            if (reloj->hora_actual[MINUTES_UNITS] >= 10) {
+                reloj->hora_actual[MINUTES_UNITS] = 0;
+                reloj->hora_actual[MINUTES_TENS]++;
+
+                if (reloj->hora_actual[MINUTES_TENS] >= 6) {
+                    reloj->hora_actual[MINUTES_TENS] = 0;
+                    reloj->hora_actual[HOURS_UNITS]++;
+
+                    if (reloj->hora_actual[HOURS_UNITS] >= 10) {
+                        reloj->hora_actual[HOURS_UNITS] = 0;
+                        reloj->hora_actual[HOURS_TENS]++;
+
+                        if (reloj->hora_actual[HOURS_TENS] >= 2 && reloj->hora_actual[HOURS_UNITS] >= 4) {
+                            reloj->hora_actual[HOURS_TENS] = 0;
+                            reloj->hora_actual[HOURS_UNITS] = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void ClockUpdate(clock_t reloj) {
+    reloj->tics--;
+
+    if (reloj->tics == 0) {
+        Increment(reloj);
+        reloj->tics = reloj->tics_por_segundo;
+    }
 }
 
 /* === End of documentation ==================================================================== */
