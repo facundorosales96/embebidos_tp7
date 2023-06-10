@@ -46,7 +46,9 @@ extern "C" {
 
 typedef struct clock_s * clock_t;
 
-clock_t ClockCreate(int tics_por_segundo);
+typedef void (*alarm_notification_t)(void);
+
+clock_t ClockCreate(int tics_por_segundo, alarm_notification_t enable_alarm);
 
 /* === Public variable declarations ============================================================ */
 

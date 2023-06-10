@@ -60,14 +60,16 @@ struct clock_s {
     uint8_t tics_por_segundo;
     uint8_t tics;
     uint8_t hora_alarma_fijada[6];
+    alarm_notification_t EnableAlarm;
 };
 
-clock_t ClockCreate(int tics_por_segundo) {
+clock_t ClockCreate(int tics_por_segundo, alarm_notification_t EnableAlarm) {
     static struct clock_s self[1];
 
     memset(self, 0, sizeof(self));
     self->tics_por_segundo = tics_por_segundo;
     self->tics = tics_por_segundo;
+    self->EnableAlarm = EnableAlarm;
     return self;
 }
 
@@ -116,12 +118,18 @@ void Increment(clock_t reloj) {
     }
 }
 
+void AlarmaCheck(clock_t reloj) {
+    if (memcmp(reloj->hora_actual, reloj->hora_alarma_fijada, sizeof(reloj->hora_actual)) == 0)
+        reloj->EnableAlarm();
+}
+
 void ClockUpdate(clock_t reloj) {
     reloj->tics--;
 
     if (reloj->tics == 0) {
         Increment(reloj);
         reloj->tics = reloj->tics_por_segundo;
+        AlarmaCheck(reloj);
     }
 }
 
