@@ -59,6 +59,7 @@ struct clock_s {
     bool valida;
     uint8_t tics_por_segundo;
     uint8_t tics;
+    uint8_t hora_alarma_fijada[6];
 };
 
 clock_t ClockCreate(int tics_por_segundo) {
@@ -122,6 +123,14 @@ void ClockUpdate(clock_t reloj) {
         Increment(reloj);
         reloj->tics = reloj->tics_por_segundo;
     }
+}
+
+void AlarmGetTime(clock_t reloj, uint8_t * hora, int size) {
+    memcpy(hora, reloj->hora_alarma_fijada, size);
+}
+
+void AlarmSetTime(clock_t reloj, const uint8_t * hora, int size) {
+    memcpy(reloj->hora_alarma_fijada, hora, size);
 }
 
 /* === End of documentation ==================================================================== */

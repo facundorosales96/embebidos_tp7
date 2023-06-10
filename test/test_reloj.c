@@ -3,7 +3,10 @@
 // Al ajustar la hora el reloj queda en hora y es valida
 // Despues de n ciclos de reloj la hora avanza un seg, 10seg, 1min, 10min, 1h, 10hs, 1 d
 // Fijar la hora de la alarma y consultarla
-//...
+// Fijar la alarma y avanzar el reloj para que suene
+// Fijar la alarma, deshabilitarla y avanzar el reloj para que no suene
+// Hacer sonar la alarma y posponerla
+// Hacer sonar la alarma y cancelarla hasta el otro dia
 
 #include "reloj.h"
 #include "unity.h"
@@ -94,4 +97,17 @@ void test_hora_avanza_una_hora(void) {
     ClockGetTime(reloj, hora, 6);
 
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
+}
+
+// Fijar la hora de la alarma y consultarla
+
+void test_fijar_hora_alarma(void) {
+    uint8_t hora_alarma[6] = {0};
+    clock_t reloj = ClockCreate(5);
+    uint8_t hora_alarma_fijada[] = {0, 8, 3, 0, 0, 0};
+
+    AlarmSetTime(reloj, hora_alarma_fijada, 6);
+    AlarmGetTime(reloj, hora_alarma, 6);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(hora_alarma_fijada, hora_alarma, 6);
 }
