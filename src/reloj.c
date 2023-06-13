@@ -150,6 +150,10 @@ void ClockUpdate(clock_t reloj) {
         reloj->tics = reloj->tics_por_segundo;
         reloj->segundos_pospuestos--;
         AlarmaCheck(reloj);
+        if (reloj->hora_actual[0] == 2 && reloj->hora_actual[1] == 4) {
+            reloj->hora_actual[0] = 0;
+            reloj->hora_actual[1] = 0;
+        }
     }
 }
 
@@ -165,6 +169,10 @@ void ExtendAlarm(clock_t reloj, int minutos) {
     reloj->segundos_pospuestos = minutos * 60;
     reloj->EnableAlarm(false);
     reloj->alarma_pospuesta = 1;
+}
+
+void DisableAlarm(clock_t reloj) {
+    reloj->EnableAlarm(false);
 }
 
 /* === End of documentation ==================================================================== */

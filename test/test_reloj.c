@@ -89,6 +89,21 @@ void test_hora_avanza_un_minuto(void) {
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
 }
 
+void test_hora_avanza_diez_minutos(void) {
+    static const uint8_t ESPERADO[] = {0, 0, 1, 0, 0, 0};
+    uint8_t hora[6] = {0};
+    clock_t reloj = ClockCreate(5, EnableAlarm);
+
+    int n = 3000;
+    for (int i = 0; i < n; i++) {
+
+        ClockUpdate(reloj);
+    }
+    ClockGetTime(reloj, hora, 6);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
+}
+
 void test_hora_avanza_una_hora(void) {
     static const uint8_t ESPERADO[] = {0, 1, 0, 0, 0, 0};
     uint8_t hora[6] = {0};
@@ -104,6 +119,35 @@ void test_hora_avanza_una_hora(void) {
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
 }
 
+void test_hora_avanza_diez_horas(void) {
+    static const uint8_t ESPERADO[] = {1, 0, 0, 0, 0, 0};
+    uint8_t hora[6] = {0};
+    clock_t reloj = ClockCreate(5, EnableAlarm);
+
+    int n = 180000;
+    for (int i = 0; i < n; i++) {
+
+        ClockUpdate(reloj);
+    }
+    ClockGetTime(reloj, hora, 6);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
+}
+
+void test_hora_avanza_un_dia(void) {
+    static const uint8_t ESPERADO[] = {0, 0, 0, 0, 0, 0};
+    uint8_t hora[6] = {0};
+    clock_t reloj = ClockCreate(5, EnableAlarm);
+
+    int n = 432000;
+    for (int i = 0; i < n; i++) {
+
+        ClockUpdate(reloj);
+    }
+    ClockGetTime(reloj, hora, 6);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
+}
 // Fijar la hora de la alarma y consultarla
 
 void test_fijar_hora_alarma(void) {
@@ -202,5 +246,44 @@ void test_fijar_alarma_y_posponer(void) {
     ClockGetTime(reloj, hora, 6);
 
     TEST_ASSERT_EQUAL_UINT8_ARRAY(HORA_ALARMA_POSPUESTA, hora, 6);
+    TEST_ASSERT_TRUE(alarm_enable);
+}
+
+// Hacer sonar la alarma y cancelarla hasta el otro dia
+
+void test_fijar_alarma_y_posponer_un_dia(void) {
+    static const uint8_t HORA_INICIAL[] = {0, 0, 0, 0, 0, 0};
+    static const uint8_t HORA_ALARMA[] = {0, 0, 0, 1, 0, 0};
+    static const uint8_t HORA_ALARMA_2[] = {0, 0, 0, 1, 0, 0};
+
+    uint8_t hora[6] = {0};
+
+    clock_t reloj = ClockCreate(5, EnableAlarm);
+
+    ClockSetTime(reloj, HORA_INICIAL, 6);
+    AlarmSetTime(reloj, HORA_ALARMA, 6);
+    ActivateAlarm(reloj, true);
+
+    int n = 300;
+    for (int i = 0; i < n; i++) {
+
+        ClockUpdate(reloj);
+    }
+    ClockGetTime(reloj, hora, 6);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(HORA_ALARMA, hora, 6);
+    TEST_ASSERT_TRUE(alarm_enable);
+
+    DisableAlarm(reloj);
+    TEST_ASSERT_FALSE(alarm_enable);
+
+    n = 432000;
+    for (int i = 0; i < n; i++) {
+
+        ClockUpdate(reloj);
+    }
+    ClockGetTime(reloj, hora, 6);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(HORA_ALARMA_2, hora, 6);
     TEST_ASSERT_TRUE(alarm_enable);
 }
