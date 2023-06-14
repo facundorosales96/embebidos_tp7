@@ -48,12 +48,11 @@ typedef struct clock_s * clock_t;
 
 typedef void (*alarm_notification_t)(bool status);
 
-clock_t ClockCreate(int tics_por_segundo, alarm_notification_t enable_alarm);
-
 /* === Public variable declarations ============================================================ */
 
 /* === Public function declarations ============================================================ */
 
+clock_t ClockCreate(int tics_por_segundo, alarm_notification_t enable_alarm);
 bool ClockGetTime(clock_t reloj, uint8_t * hora, int size);
 bool ClockSetTime(clock_t reloj, const uint8_t * hora, int size);
 void ClockUpdate(clock_t reloj);

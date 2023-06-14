@@ -1,13 +1,3 @@
-// PRUEBAS
-// Al iniciar el reloj esta en 00:00 y con hora invalida
-// Al ajustar la hora el reloj queda en hora y es valida
-// Despues de n ciclos de reloj la hora avanza un seg, 10seg, 1min, 10min, 1h, 10hs, 1 d
-// Fijar la hora de la alarma y consultarla
-// Fijar la alarma y avanzar el reloj para que suene
-// Fijar la alarma, deshabilitarla y avanzar el reloj para que no suene
-// Hacer sonar la alarma y posponerla
-// Hacer sonar la alarma y cancelarla hasta el otro dia
-
 #include "reloj.h"
 #include "unity.h"
 
@@ -16,6 +6,7 @@ static bool alarm_enable = false;
 void EnableAlarm(bool status) {
     alarm_enable = status;
 }
+
 // Al iniciar el reloj esta en 00:00 y con hora invalida
 
 void test_reloj_inica_hora_invalida(void) {
@@ -59,6 +50,8 @@ void test_hora_avanza_un_segundo(void) {
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
 }
 
+// Despues de n ciclos de reloj la hora avanza 10 seg
+
 void test_hora_avanza_diez_segundos(void) {
     static const uint8_t ESPERADO[] = {0, 0, 0, 0, 1, 0};
     uint8_t hora[6] = {0};
@@ -73,6 +66,8 @@ void test_hora_avanza_diez_segundos(void) {
 
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
 }
+
+// Despues de n ciclos de reloj la hora avanza un minuto
 
 void test_hora_avanza_un_minuto(void) {
     static const uint8_t ESPERADO[] = {0, 0, 0, 1, 0, 0};
@@ -89,6 +84,8 @@ void test_hora_avanza_un_minuto(void) {
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
 }
 
+// Despues de n ciclos de reloj la hora avanza 10 minutos
+
 void test_hora_avanza_diez_minutos(void) {
     static const uint8_t ESPERADO[] = {0, 0, 1, 0, 0, 0};
     uint8_t hora[6] = {0};
@@ -103,6 +100,8 @@ void test_hora_avanza_diez_minutos(void) {
 
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
 }
+
+// Despues de n ciclos de reloj la hora avanza una hora
 
 void test_hora_avanza_una_hora(void) {
     static const uint8_t ESPERADO[] = {0, 1, 0, 0, 0, 0};
@@ -119,6 +118,8 @@ void test_hora_avanza_una_hora(void) {
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
 }
 
+// Despues de n ciclos de reloj la hora avanza 10 horas
+
 void test_hora_avanza_diez_horas(void) {
     static const uint8_t ESPERADO[] = {1, 0, 0, 0, 0, 0};
     uint8_t hora[6] = {0};
@@ -134,6 +135,8 @@ void test_hora_avanza_diez_horas(void) {
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
 }
 
+// Despues de n ciclos de reloj la hora avanza un dia
+
 void test_hora_avanza_un_dia(void) {
     static const uint8_t ESPERADO[] = {0, 0, 0, 0, 0, 0};
     uint8_t hora[6] = {0};
@@ -148,6 +151,7 @@ void test_hora_avanza_un_dia(void) {
 
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
 }
+
 // Fijar la hora de la alarma y consultarla
 
 void test_fijar_hora_alarma(void) {
